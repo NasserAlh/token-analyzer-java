@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mvn.cmd *)",
+      "Bash(javac *)"
+    ],
+    "deny": [
+      "Read(./target/**)",
+      "Read(./.mvn/**)",
+      "Read(./logs/**)"
+    ]
+  }
+}
