@@ -20,16 +20,16 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         
         <!-- JavaFX Version -->
-        <javafx.version>21.0.1</javafx.version>
+        <javafx.version>21.0.4</javafx.version>
         
         <!-- Library Versions -->
-        <jtokkit.version>1.0.0</jtokkit.version>
-        <pdfbox.version>3.0.0</pdfbox.version>
-        <poi.version>5.2.4</poi.version>
-        <jsoup.version>1.17.2</jsoup.version>
-        <jackson.version>2.16.1</jackson.version>
-        <commons-text.version>1.11.0</commons-text.version>
-        <junit.version>5.10.1</junit.version>
+        <jtokkit.version>1.1.0</jtokkit.version>
+        <pdfbox.version>3.0.5</pdfbox.version>
+        <poi.version>5.4.1</poi.version>
+        <jsoup.version>1.20.1</jsoup.version>
+        <jackson.version>2.19.0</jackson.version>
+        <commons-text.version>1.14.0</commons-text.version>
+        <junit.version>5.13.4</junit.version>
     </properties>
     
     <dependencies>
@@ -65,6 +65,11 @@
         </dependency>
         
         <!-- Word Document Processing -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>${poi.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
@@ -145,6 +150,7 @@
                     <options>
                         <option>--enable-preview</option>
                     </options>
+                    <includePathExceptionsInClasspath>true</includePathExceptionsInClasspath>
                 </configuration>
             </plugin>
             

@@ -1,8 +1,19 @@
 package com.tokenanalyzer;
 
-import com.tokenanalyzer.models.FileMetadata;
-import com.tokenanalyzer.models.FormatMetadata;
-import com.tokenanalyzer.models.ProcessedFile;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+
+import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
@@ -12,15 +23,9 @@ import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
-import java.util.concurrent.CompletableFuture;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-import java.util.List;
-import java.util.ArrayList;
+import com.tokenanalyzer.models.FileMetadata;
+import com.tokenanalyzer.models.FormatMetadata;
+import com.tokenanalyzer.models.ProcessedFile;
 
 public class FileProcessor {
     private static final Logger logger = LoggerFactory.getLogger(FileProcessor.class);
@@ -37,7 +42,7 @@ public class FileProcessor {
                     filePath.getFileName(), content.length());
                 return content;
                 
-            } catch (Exception e) {
+            } catch (IOException | UnsupportedOperationException e) {
                 logger.error("Error processing file: {}", filePath, e);
                 throw new RuntimeException("File processing failed: " + filePath, e);
             }
@@ -143,7 +148,7 @@ public class FileProcessor {
     private String extractPdfText(File file) throws IOException {
         logger.debug("Processing PDF file: {}", file.getName());
         
-        try (PDDocument document = PDDocument.load(file)) {
+        try (PDDocument document = Loader.loadPDF(file)) {
             PDFTextStripper stripper = new PDFTextStripper();
             stripper.setSortByPosition(true);
             stripper.setStartPage(1);
@@ -248,7 +253,7 @@ public class FileProcessor {
     }
     
     private FormatMetadata getPdfMetadata(File file) throws IOException {
-        try (PDDocument document = PDDocument.load(file)) {
+        try (PDDocument document = Loader.loadPDF(file)) {
             var info = document.getDocumentInformation();
             return new FormatMetadata(
                 info.getAuthor(),
@@ -288,7 +293,7 @@ public class FileProcessor {
                 String text = extractText(file);
                 FileMetadata metadata = getMetadata(file);
                 results.add(new ProcessedFile(file, text, metadata, null));
-            } catch (Exception e) {
+            } catch (IOException | UnsupportedOperationException e) {
                 logger.error("Error processing file {}: {}", file.getName(), e.getMessage());
                 results.add(new ProcessedFile(file, null, null, e.getMessage()));
             }

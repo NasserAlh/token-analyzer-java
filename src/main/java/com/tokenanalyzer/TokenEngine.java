@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.text.BreakIterator;
 import java.util.*;
+import com.knuddels.jtokkit.api.IntArrayList;
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -36,7 +37,7 @@ public class TokenEngine {
         Map<String, ModelType> map = new HashMap<>();
         map.put("gpt-3.5-turbo", ModelType.GPT_3_5_TURBO);
         map.put("gpt-4", ModelType.GPT_4);
-        map.put("gpt-4-turbo", ModelType.GPT_4_TURBO);
+        map.put("gpt-4-turbo", ModelType.GPT_4);
         map.put("text-embedding-ada-002", ModelType.TEXT_EMBEDDING_ADA_002);
         map.put("text-davinci-003", ModelType.TEXT_DAVINCI_003);
         // Add Claude models (using GPT-4 encoding as approximation)
@@ -124,8 +125,11 @@ public class TokenEngine {
         Encoding encoding = registry.getEncodingForModel(modelType);
         
         // Encode text to get tokens
-        List<Integer> tokens = encoding.encode(text);
-        int totalTokens = tokens.size();
+        IntArrayList tokensList = encoding.encode(text);
+        int totalTokens = tokensList.size();
+        
+        // Convert to List for compatibility
+        List<Integer> tokens = tokensList.boxed();
         
         // Calculate unique tokens
         Set<Integer> uniqueTokenSet = new HashSet<>(tokens);
@@ -161,8 +165,9 @@ public class TokenEngine {
         
         double totalLength = tokens.stream()
             .mapToInt(token -> {
-                byte[] bytes = encoding.decodeBytes(List.of(token));
-                return new String(bytes).length();
+                IntArrayList singleToken = new IntArrayList();
+                singleToken.add(token);
+                return encoding.decode(singleToken).length();
             })
             .sum();
         
@@ -175,7 +180,9 @@ public class TokenEngine {
             .sorted(Map.Entry.<Integer, Long>comparingByValue().reversed())
             .limit(limit)
             .map(entry -> {
-                String tokenText = new String(encoding.decodeBytes(List.of(entry.getKey())));
+                IntArrayList singleToken = new IntArrayList();
+                singleToken.add(entry.getKey());
+                String tokenText = encoding.decode(singleToken);
                 return new TokenInfo(tokenText, entry.getKey(), entry.getValue());
             })
             .collect(Collectors.toList());

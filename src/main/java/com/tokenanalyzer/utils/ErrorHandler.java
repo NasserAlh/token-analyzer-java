@@ -18,15 +18,21 @@ public class ErrorHandler {
             throwable = throwable.getCause();
         }
         
-        return switch (throwable) {
-            case FileProcessingException fpe -> handleFileProcessingError(fpe);
-            case TokenAnalysisException tae -> handleTokenAnalysisError(tae);
-            case UnsupportedFormatException ufe -> handleUnsupportedFormatError(ufe);
-            case IOException ioe -> handleIOError(ioe);
-            case OutOfMemoryError oome -> "File is too large to process. Please try with a smaller file.";
-            case SecurityException se -> "Access denied. Please check file permissions.";
-            default -> "An unexpected error occurred: " + throwable.getMessage();
-        };
+        if (throwable instanceof UnsupportedFormatException ufe) {
+            return handleUnsupportedFormatError(ufe);
+        } else if (throwable instanceof FileProcessingException fpe) {
+            return handleFileProcessingError(fpe);
+        } else if (throwable instanceof TokenAnalysisException tae) {
+            return handleTokenAnalysisError(tae);
+        } else if (throwable instanceof IOException ioe) {
+            return handleIOError(ioe);
+        } else if (throwable instanceof OutOfMemoryError) {
+            return "File is too large to process. Please try with a smaller file.";
+        } else if (throwable instanceof SecurityException) {
+            return "Access denied. Please check file permissions.";
+        } else {
+            return "An unexpected error occurred: " + throwable.getMessage();
+        }
     }
     
     private static String handleFileProcessingError(FileProcessingException fpe) {

@@ -47,8 +47,9 @@
                <Label text="Analysis Results:" />
                <TableView fx:id="resultsTable" VBox.vgrow="ALWAYS">
                  <columns>
-                   <TableColumn fx:id="metricColumn" prefWidth="200.0" text="Metric" />
-                   <TableColumn fx:id="valueColumn" prefWidth="150.0" text="Value" />
+                   <TableColumn fx:id="metricColumn" prefWidth="150.0" text="Metric" />
+                   <TableColumn fx:id="valueColumn" prefWidth="100.0" text="Value" />
+                   <TableColumn fx:id="descriptionColumn" prefWidth="350.0" text="Description" />
                  </columns>
                </TableView>
             </children>

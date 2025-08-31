@@ -31,6 +31,7 @@ public class MainController implements Initializable {
     @FXML private TableView<MetricRow> resultsTable;
     @FXML private TableColumn<MetricRow, String> metricColumn;
     @FXML private TableColumn<MetricRow, String> valueColumn;
+    @FXML private TableColumn<MetricRow, String> descriptionColumn;
     @FXML private Label statusLabel;
     
     private final TokenEngine tokenEngine = new TokenEngine();
@@ -58,6 +59,7 @@ public class MainController implements Initializable {
     private void setupResultsTable() {
         metricColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().metric()));
         valueColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().value()));
+        descriptionColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().description()));
     }
     
     private void setupEventHandlers() {
@@ -146,32 +148,32 @@ public class MainController implements Initializable {
     private void displayResults(AnalysisResult result) {
         ObservableList<MetricRow> data = FXCollections.observableArrayList(
             // Basic metrics
-            new MetricRow("Token Count", String.valueOf(result.totalTokens())),
-            new MetricRow("Unique Tokens", String.valueOf(result.uniqueTokens())),
-            new MetricRow("Character Count", String.valueOf(result.fileSize())),
-            new MetricRow("Word Count", calculateWordCount(result)),
+            new MetricRow("Token Count", String.valueOf(result.totalTokens()), "Total number of tokens (smallest units of text) identified by the tokenizer"),
+            new MetricRow("Unique Tokens", String.valueOf(result.uniqueTokens()), "Number of distinct tokens, indicating vocabulary diversity"),
+            new MetricRow("Character Count", String.valueOf(result.fileSize()), "Total number of characters including spaces and punctuation"),
+            new MetricRow("Word Count", calculateWordCount(result), "Estimated number of words based on token analysis"),
             
             // Token metrics
-            new MetricRow("Token/Word Ratio", String.format("%.3f", result.tokenWordRatio())),
-            new MetricRow("Avg Token Length", String.format("%.2f", result.avgTokenLength())),
-            new MetricRow("Tokens per Character", String.format("%.4f", result.getTokensPerCharacter())),
-            new MetricRow("Uniqueness Ratio", String.format("%.3f", result.getUniquenessRatio())),
+            new MetricRow("Token/Word Ratio", String.format("%.3f", result.tokenWordRatio()), "Average number of tokens per word - higher values indicate more complex tokenization"),
+            new MetricRow("Avg Token Length", String.format("%.2f", result.avgTokenLength()), "Average character length per token - indicates granularity of tokenization"),
+            new MetricRow("Tokens per Character", String.format("%.4f", result.getTokensPerCharacter()), "Token density - how many tokens per character of text"),
+            new MetricRow("Uniqueness Ratio", String.format("%.3f", result.getUniquenessRatio()), "Ratio of unique tokens to total tokens - measures vocabulary repetition"),
             
             // Content analysis
-            new MetricRow("Content Density", String.format("%.3f", result.contentDensity())),
-            new MetricRow("Lexical Diversity", String.format("%.3f", result.lexicalDiversity())),
-            new MetricRow("Whitespace Ratio", String.format("%.3f", result.whitespaceRatio())),
+            new MetricRow("Content Density", String.format("%.3f", result.contentDensity()), "Ratio of meaningful content to total text - excludes whitespace and common words"),
+            new MetricRow("Lexical Diversity", String.format("%.3f", result.lexicalDiversity()), "Measure of vocabulary richness - higher values indicate more varied word choice"),
+            new MetricRow("Whitespace Ratio", String.format("%.3f", result.whitespaceRatio()), "Proportion of text that consists of spaces, tabs, and line breaks"),
             
             // Readability
-            new MetricRow("Flesch Score", String.format("%.1f", result.fleschScore())),
-            new MetricRow("Reading Level", result.getReadingLevel()),
-            new MetricRow("Complexity Score", String.format("%.3f", result.complexityScore())),
-            new MetricRow("Complexity Level", result.getComplexityLevel()),
-            new MetricRow("Avg Sentence Length", String.format("%.1f", result.avgSentenceLength())),
+            new MetricRow("Flesch Score", String.format("%.1f", result.fleschScore()), "Reading ease score (0-100) - higher scores indicate easier readability"),
+            new MetricRow("Reading Level", result.getReadingLevel(), "Educational level required to understand the text based on complexity"),
+            new MetricRow("Complexity Score", String.format("%.3f", result.complexityScore()), "Overall text complexity based on sentence structure and vocabulary"),
+            new MetricRow("Complexity Level", result.getComplexityLevel(), "Categorized complexity level from simple to very complex"),
+            new MetricRow("Avg Sentence Length", String.format("%.1f", result.avgSentenceLength()), "Average number of words per sentence - longer sentences increase complexity"),
             
             // Processing info
-            new MetricRow("Model/Encoding", result.model()),
-            new MetricRow("Processing Time", result.getFormattedProcessingTime())
+            new MetricRow("Model/Encoding", result.model(), "Tokenization model used for analysis (GPT-3.5, GPT-4, etc.)"),
+            new MetricRow("Processing Time", result.getFormattedProcessingTime(), "Time taken to complete the text analysis")
         );
         
         resultsTable.setItems(data);
@@ -229,5 +231,5 @@ public class MainController implements Initializable {
         alert.showAndWait();
     }
     
-    public record MetricRow(String metric, String value) {}
+    public record MetricRow(String metric, String value, String description) {}
 }
