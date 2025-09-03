@@ -1,14 +1,15 @@
-# Token Analyzer
+# Claude Token Analyzer
 
-A comprehensive text analysis tool built with Java 21 and JavaFX, featuring advanced tokenization, multi-format file processing, and detailed text metrics.
+A comprehensive text analysis tool built with Java 21 and JavaFX, **optimized for Claude AI models**. Features advanced tokenization, multi-format file processing, detailed text metrics, and **real-time Claude API cost estimation**.
 
 ## Features
 
-### 🔤 **Advanced Tokenization**
-- Multiple encoding models (GPT-3.5, GPT-4, Claude approximations)
-- JTokkit integration for OpenAI-compatible token counting
-- Token frequency analysis and statistics
-- Model comparison capabilities
+### 🔤 **Claude-Optimized Tokenization**
+- **CL100K_BASE encoding** - same tokenization as Claude models use
+- **All Claude models supported**: Opus 4.1, Opus 4, Sonnet 4, Sonnet 3.7, Haiku 3.5, Haiku 3
+- **Real-time cost estimation** based on official Anthropic pricing
+- Token frequency analysis and detailed statistics
+- Accurate token counting for Claude API workflows
 
 ### 📄 **Multi-Format File Support**
 - **Text Files**: TXT, MD
@@ -19,14 +20,17 @@ A comprehensive text analysis tool built with Java 21 and JavaFX, featuring adva
 
 ### 📊 **Comprehensive Analysis**
 - **Token Metrics**: Total, unique, ratios, frequency distribution
+- **Claude Cost Analysis**: Input costs, model-specific pricing, cost per file
 - **Content Analysis**: Density, lexical diversity, whitespace ratios
 - **Readability**: Flesch Reading Ease scores, complexity analysis
 - **Text Statistics**: Word count, sentence analysis, vocabulary richness
 
 ### 🎨 **Modern JavaFX GUI**
-- Clean, intuitive interface
-- Real-time analysis results
-- Progress indicators
+- Clean, intuitive interface optimized for Claude workflows
+- Real-time analysis results with **Claude cost estimation**
+- **Multi-file batch processing** with progress indicators
+- **Batch summary statistics** with total costs and averages
+- Tabbed results view (Single File / Batch Results)
 - Comprehensive error handling
 - Resizable result tables
 
@@ -58,11 +62,13 @@ A comprehensive text analysis tool built with Java 21 and JavaFX, featuring adva
 
 ### GUI Application
 1. Launch the application using `mvn javafx:run`
-2. Either:
+2. Choose your input method:
    - Type or paste text directly into the input area
-   - Use **File → Open File** to load supported documents
-3. Select your preferred encoding model
-4. Click **Analyze** to get comprehensive metrics
+   - Use **File → Open File** to load a single document
+   - Use **File → Open Multiple Files** for batch processing
+3. **Claude encoding is automatically selected** (CL100K_BASE)
+4. Click **Analyze** (single file) or **Analyze Batch** (multiple files)
+5. View results with **Claude cost estimates** in the appropriate tab
 
 ### Supported File Formats
 - **Plain Text**: `.txt`, `.md`
@@ -97,13 +103,23 @@ src/main/java/com/tokenanalyzer/
     └── ErrorHandler.java       # Comprehensive error handling
 ```
 
+### Batch Processing Features
+- **Multi-file selection**: Choose multiple files simultaneously
+- **Asynchronous processing**: Non-blocking UI with real-time progress
+- **Individual file results**: Comprehensive table showing per-file metrics
+- **Batch summary statistics**: Total tokens, average costs, success rates
+- **Claude cost tracking**: See estimated costs for entire batch
+- **Error handling**: Graceful handling of individual file failures
+- **Mixed format support**: Process different file types in same batch
+
 ## Analysis Metrics
 
 ### Token Analysis
-- **Total Tokens**: Raw token count using selected encoding
+- **Total Tokens**: Raw token count using CL100K_BASE encoding (Claude standard)
 - **Unique Tokens**: Distinct token count
 - **Token/Word Ratio**: Efficiency of tokenization
 - **Average Token Length**: Mean character length per token
+- **Estimated Input Cost**: Real-time Claude API cost calculation
 
 ### Content Metrics
 - **Content Density**: Ratio of non-whitespace to total characters
@@ -117,6 +133,14 @@ src/main/java/com/tokenanalyzer/
 - **Reading Level**: Categorized difficulty (Very Easy to Very Difficult)
 
 ## Building
+
+### Quick Start (Windows)
+```bash
+# Using batch files (Windows)
+build.bat           # Clean and compile
+run.bat            # Run application
+build-and-run.bat  # Build and run in sequence
+```
 
 ### Development Build
 ```bash
@@ -138,12 +162,17 @@ mvn test
 
 The application uses Maven for dependency management and JavaFX Maven Plugin for execution. Key dependencies:
 
-- **JTokkit**: OpenAI-compatible tokenization
+- **JTokkit**: Claude-compatible tokenization (CL100K_BASE)
 - **Apache PDFBox**: PDF processing
 - **Apache POI**: DOCX document processing  
 - **JSoup**: HTML parsing
 - **JavaFX 21**: Modern GUI framework
 - **SLF4J + Logback**: Comprehensive logging
+
+### Claude Pricing Integration
+- **Real-time cost calculation** based on official Anthropic pricing
+- **All Claude models supported** with accurate pricing
+- **Batch cost summaries** for large-scale analysis projects
 
 ## Error Handling
 
@@ -167,6 +196,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Acknowledgments
 
-- **JTokkit** for OpenAI-compatible tokenization
+- **Anthropic** for Claude AI models and transparent pricing
+- **JTokkit** for CL100K_BASE tokenization compatibility
 - **Apache Foundation** for document processing libraries
 - **JavaFX Community** for the modern GUI framework

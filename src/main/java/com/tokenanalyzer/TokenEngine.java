@@ -35,15 +35,28 @@ public class TokenEngine {
     
     private Map<String, ModelType> initializeModelMap() {
         Map<String, ModelType> map = new HashMap<>();
-        map.put("gpt-3.5-turbo", ModelType.GPT_3_5_TURBO);
-        map.put("gpt-4", ModelType.GPT_4);
-        map.put("gpt-4-turbo", ModelType.GPT_4);
-        map.put("text-embedding-ada-002", ModelType.TEXT_EMBEDDING_ADA_002);
-        map.put("text-davinci-003", ModelType.TEXT_DAVINCI_003);
-        // Add Claude models (using GPT-4 encoding as approximation)
+        
+        // Claude Models (All use CL100K_BASE encoding)
+        // Latest Claude 4 Models
+        map.put("claude-opus-4-1", ModelType.GPT_4);     // Claude Opus 4.1 - Most capable
+        map.put("claude-opus-4", ModelType.GPT_4);       // Claude Opus 4
+        map.put("claude-sonnet-4", ModelType.GPT_4);     // Claude Sonnet 4 - High performance
+        map.put("claude-sonnet-3.7", ModelType.GPT_4);   // Claude Sonnet 3.7
+        map.put("claude-haiku-3.5", ModelType.GPT_4);    // Claude Haiku 3.5 - Fastest
+        map.put("claude-haiku-3", ModelType.GPT_4);      // Claude Haiku 3
+        
+        // Legacy Claude 3 Models
         map.put("claude-3-opus", ModelType.GPT_4);
         map.put("claude-3-sonnet", ModelType.GPT_4);
         map.put("claude-3-haiku", ModelType.GPT_4);
+        
+        // OpenAI Models (for compatibility)
+        map.put("gpt-4", ModelType.GPT_4);
+        map.put("gpt-4-turbo", ModelType.GPT_4);
+        map.put("gpt-3.5-turbo", ModelType.GPT_3_5_TURBO);
+        map.put("text-davinci-003", ModelType.TEXT_DAVINCI_003);
+        map.put("text-embedding-ada-002", ModelType.TEXT_EMBEDDING_ADA_002);
+        
         return map;
     }
     
@@ -238,11 +251,11 @@ public class TokenEngine {
     
     private String getModelNameFromEncoding(EncodingType encodingType) {
         return switch (encodingType) {
-            case CL100K_BASE -> "gpt-3.5-turbo";
-            case P50K_BASE -> "text-davinci-003";
-            case R50K_BASE -> "gpt-3";
-            case P50K_EDIT -> "text-davinci-edit-001";
-            default -> "gpt-3.5-turbo";
+            case CL100K_BASE -> "claude-sonnet-4";  // Default to Claude Sonnet 4 (best balance)
+            case P50K_BASE -> "text-davinci-003";   // Legacy OpenAI
+            case R50K_BASE -> "gpt-3";              // Legacy OpenAI
+            case P50K_EDIT -> "text-davinci-edit-001"; // Legacy OpenAI
+            default -> "claude-sonnet-4";           // Default to Claude
         };
     }
     
